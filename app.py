@@ -1,34 +1,31 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template
+
+from routes.baitapchuong3 import baitapchuong3_bp
+from routes.buoi3 import buoi3_bp
+from routes.buoi4 import buoi4_bp
+from routes.chuong5 import chuong5_bp
+
 app = Flask(__name__)
+app.json.ensure_ascii = False  # type: ignore
 
-@app.route("/", methods=["GET", "POST"])
+
+# Đăng ký blueprint vào ứng dụng
+app.register_blueprint(buoi4_bp)
+app.register_blueprint(buoi3_bp)
+app.register_blueprint(baitapchuong3_bp)
+app.register_blueprint(chuong5_bp)
+
+
+@app.route("/")
 def home():
+    return ""
 
-    a = 0
-    b = 0
-    cong = 0
-    tru = 0
-    nhan = 0
-    chia = 0
 
-    if request.method == "POST":
-        a = float(request.form["a"])
-        b = float(request.form["b"])
+@app.errorhandler(404)
+def page_not_found(e):
+    error_msg = getattr(e, "description", None)
+    return render_template("404.html", error_message=error_msg), 404
 
-        cong = a + b
-        tru = a - b
-        nhan = a * b
-        chia = a / b
-
-    return render_template(
-        "math.html",
-        a=a,
-        b=b,
-        cong=cong,
-        tru=tru,
-        nhan=nhan,
-        chia=chia
-    )
 
 if __name__ == "__main__":
     app.run(debug=True)
