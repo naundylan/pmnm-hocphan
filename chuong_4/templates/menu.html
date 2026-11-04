@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% from "_macro.html" import item_card, pagination %}
+
+{% block title %}Thực đơn · Cà phê Sông Hương{% endblock %}
+
+{% block styles %}
+  {{ super() }}
+  .text-coffee { color: #70452e; }
+{% endblock %}
+
+{% block content %}
+  <div class="mb-4">
+    <h1 class="text-coffee">Thực đơn</h1>
+    <p class="text-secondary">Chọn một món thân quen, nhâm nhi và để ngày trôi thật chậm.</p>
+  </div>
+
+  {% if menu %}
+    <section class="list-group shadow-sm" aria-label="Danh sách món">
+      {% for item in menu %}
+        {{ item_card(item) }}
+      {% endfor %}
+    </section>
+    {{ pagination(page, pages, 'show_menu') }}
+  {% else %}
+    <div class="alert alert-info">Thực đơn đang được cập nhật. Bạn quay lại sau nhé!</div>
+  {% endif %}
+
+  <section class="row g-3 mt-2" aria-label="Thống kê thực đơn">
+    <div class="col-md-6"><div class="card border-0 bg-warning-subtle h-100"><div class="card-body">Đang phục vụ<strong class="d-block fs-4">{{ available_count }} / {{ total_items }} món</strong></div></div></div>
+    <div class="col-md-6"><div class="card border-0 bg-success-subtle h-100"><div class="card-body">Giá trung bình<strong class="d-block fs-4">{{ avg_price|vnd }}</strong></div></div></div>
+  </section>
+{% endblock %}

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Trang chủ</title>
+</head>
+<body>
+    {% block title %}Thực đơn{% endblock %}
+
+    {% block style %}
+    <style>
+        .gia {
+            color: brown;
+        }
+    </style>
+    {% endblock %}
+
+    {% block content %}
+    <table border="1">
+        <thead>
+            <tr>
+                <th>STT</th>
+                <th>Tên món</th>
+                <th>Giá</th>
+                <th>Có sẵn</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for item in menu %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ item.name }}</td>
+                <td class="gia">{{ item.price }}</td>
+                <td>{{ item.available }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endblock %}
+</body>
+</html>

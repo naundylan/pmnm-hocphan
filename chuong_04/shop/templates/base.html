@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}Trang chủ{% endblock %} - Sông Hương</title>
+
+    {% block style %}{% endblock %}
+</head>
+<body>
+    {% include '_navbar.html' %}
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    {% include 'footer.html' %}
+</body>
+</html>

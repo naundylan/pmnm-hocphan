@@ -1,0 +1,33 @@
+{% macro item_card(item) %}
+    <div class="item-card">
+        <h3>{{ item.name }}</h3>
+        <p class="gia">Giá: {{ "{:,.0f}".format(item.price) }} VNĐ</p>
+
+        {% if item.available %}
+            <p>Còn món</p>
+        {% else %}
+            <p>Hết món</p>
+        {% endif %}
+    </div>
+{% endmacro %}
+
+
+{% macro pagination(page, endpoint, total_pages) %}
+    <nav aria-label="Phân trang">
+        {% if page > 1 %}
+            <a href="{{ url_for(endpoint, page=page-1) }}">Trang trước</a>
+        {% endif %}
+
+        {% for p in range(1, total_pages + 1) %}
+            {% if p == page %}
+                <strong>{{ p }}</strong>
+            {% else %}
+                <a href="{{ url_for(endpoint, page=p) }}">{{ p }}</a>
+            {% endif %}
+        {% endfor %}
+
+        {% if page < total_pages %}
+            <a href="{{ url_for(endpoint, page=page+1) }}">Trang sau</a>
+        {% endif %}
+    </nav>
+{% endmacro %}

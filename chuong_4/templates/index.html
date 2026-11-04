@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Trang chủ · {{ shop.name }}{% endblock %}
+
+{% block styles %}
+  {{ super() }}
+  .text-coffee { color: #70452e; }
+{% endblock %}
+
+{% block content %}
+  <section class="p-4 p-md-5 mb-4 bg-white rounded-3 shadow-sm">
+    <h1 class="display-5 fw-bold text-coffee">Chào mừng đến {{ shop.name }}</h1>
+    <p class="lead">Một góc nhỏ để thưởng thức cà phê và chuyện trò.</p>
+    <a class="btn btn-warning" href="/menu">Xem thực đơn</a>
+  </section>
+
+  <section class="card border-0 shadow-sm mb-4" aria-label="Thông tin quán">
+    <div class="card-body">
+    <h2 class="h4 text-coffee">Thông tin quán</h2>
+    <p><strong>Địa chỉ:</strong> {{ shop.address }}</p>
+    <p><strong>Giờ mở cửa:</strong> {{ shop.open }}:00 – {{ shop.close }}:00 mỗi ngày</p>
+    {% if gio is not none and trang_thai_mo_cua is not none %}
+      <span class="badge {% if trang_thai_mo_cua %}text-bg-success{% else %}text-bg-secondary{% endif %}">{% if trang_thai_mo_cua %}Đang mở cửa{% else %}Đã đóng cửa{% endif %} · {{ gio }}:00</span>
+    {% endif %}
+    </div>
+  </section>
+
+  <section class="card border-0 shadow-sm" aria-label="Ưu đãi">
+    <div class="card-body">
+    <h2 class="h4 text-coffee">Ưu đãi</h2>
+    {% for promo in promotions %}
+      <div class="alert alert-warning py-2 mb-2">{{ promo }}</div>
+    {% else %}
+      <p>Quán đang chuẩn bị những ưu đãi mới.</p>
+    {% endfor %}
+    </div>
+  </section>
+{% endblock %}
