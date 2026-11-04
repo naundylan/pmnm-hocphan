@@ -1,9 +1,9 @@
-from _markupbase import escape
-
 from flask import Flask, abort, jsonify, make_response, redirect, request, url_for
+from markupsafe import escape
 
 app = Flask(__name__)
 app.config["JSON_AS_ASCII"] = False
+app.json.ensure_ascii = False
 
 STUDENTS = {
     "23T1020001": {
@@ -94,7 +94,7 @@ def layout(title, body):
 </html>"""
 
 
-# ---------- PHẦN 1: GIAO DIỆN WEB ----------
+# PHẦN 1: GIAO DIỆN WEB
 
 
 # Câu 1: Trang chủ
@@ -118,7 +118,7 @@ def home():
     return layout("Trang chủ", body)
 
 
-# -------- Câu 2: Danh sách sinh viên (Có lọc theo lớp)
+# Câu 2: Danh sách sinh viên (Có lọc theo lớp)
 @app.route("/students")
 def student_list():
     lop_filter = request.args.get("lop", "").strip()
@@ -181,7 +181,7 @@ def student_list():
     return layout("Danh sách sinh viên", body)
 
 
-# --------Câu 3: Chi tiết sinh viên
+# Câu 3: Chi tiết sinh viên
 @app.route("/students/<mssv>")
 def student_detail(mssv):
     summary = student_summary(mssv)
@@ -224,13 +224,13 @@ def student_detail(mssv):
     return layout(f"Chi tiết: {summary['name']}", body)
 
 
-# --------Câu 4: Link rút gọn 301
+# Câu 4: Link rút gọn 301
 @app.route("/sv/<mssv>")
 def short_student_detail(mssv):
     return redirect(url_for("student_detail", mssv=mssv), code=301)
 
 
-# --------Câu 5: Xuất CSV
+# Câu 5: Xuất CSV
 @app.route("/students/<mssv>/export")
 def export_csv(mssv):
     summary = student_summary(mssv)
@@ -248,7 +248,7 @@ def export_csv(mssv):
     return response
 
 
-# --------Câu 6: Tìm kiếm an toàn (chống XSS)
+# Câu 6: Tìm kiếm an toàn (chống XSS)
 @app.route("/search")
 def search_student():
     query = request.args.get("q", "").strip()
@@ -291,10 +291,10 @@ def search_student():
     return layout("Tìm kiếm sinh viên", body)
 
 
-#------ PHẦN 2: API JSON------
+# PHẦN 2: API JSON
 
 
-#---------Câu 7.1. Lấy danh sách sinh viên có tham số
+# Câu 7.1. Lấy danh sách sinh viên có tham số
 @app.route("/api/students", methods=["GET"])
 def api_get_students():
     lop_param = request.args.get("lop", "").strip()
@@ -318,20 +318,17 @@ def api_get_students():
             continue
 
         # Lọc theo điểm trung bình (bỏ qua sinh viên chưa có điểm)
-        if (
-            summary is not None
-            and (not lop_param or summary["lop"].lower() == lop_param.lower())
-            and (
-                min_avg is None
-                or (summary["average"] is not None and summary["average"] >= min_avg)
-            )
-        ):
-            results.append(summary)
+        if min_avg is not None:
+            avg = summary.get("average")
+            if avg is None or avg < min_avg:
+                continue
+
+        results.append(summary)
 
     return jsonify(results)
 
 
-#---------Câu 7.2: Lấy chi tiết thông tin một sinh viên theo MSSV
+# Câu 7.2: Lấy chi tiết thông tin một sinh viên theo MSSV
 @app.route("/api/students/<mssv>", methods=["GET"])
 def api_get_student_detail(mssv):
     summary = student_summary(mssv)
@@ -341,7 +338,7 @@ def api_get_student_detail(mssv):
     return jsonify(summary)
 
 
-#---------Câu 8: Quản lý điểm một học phần
+# Câu 8: Quản lý điểm một học phần
 @app.route("/api/students/<mssv>/scores/<course>", methods=["GET", "PUT", "DELETE"])
 def api_manage_score(mssv: str, course: str):
     student = STUDENTS.get(mssv)
@@ -418,7 +415,7 @@ def api_manage_score(mssv: str, course: str):
         abort(405, description="Phương thức không được hỗ trợ.")
 
 
-# ----------Câu 9: Trang lỗi thống nhất cho 400, 404, 405
+# Câu 9: Trang lỗi thống nhất cho 400, 404, 405
 ERR_TITLES = {
     400: "Dữ liệu không hợp lệ",
     404: "Không tìm thấy",
